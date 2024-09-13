@@ -26,4 +26,4 @@ jobs:
 
       - name: Build
         run: |
-          dotnet publish \src\WindowSwitcher\WindowSwitcher.csproj --configuration Release
+          dotnet publish src\WindowSwitcher\WindowSwitcher.csproj --configuration Release
