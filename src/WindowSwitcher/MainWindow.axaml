@@ -1,0 +1,92 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:models="clr-namespace:WindowSwitcher.Services.Models"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        SystemDecorations="None"
+        TransparencyLevelHint="AcrylicBlur, Blur, Transparent"
+        Background="Transparent"
+        x:Class="WindowSwitcher.MainWindow"
+        Title="WindowSwitcher"
+        SizeToContent="WidthAndHeight"
+        ShowInTaskbar="False"
+        Topmost="True"
+        Name="Root"
+        Focusable="True"
+        Deactivated="WindowBase_OnDeactivated"
+        DataContext="{Binding RelativeSource={RelativeSource Self}, Path=ViewModel}">
+    <Window.Styles>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Margin" Value="0" />
+            <Setter Property="Padding" Value="0" />
+        </Style>
+    </Window.Styles>
+    <StackPanel>
+        <TextBox Name="FilterBox" Text="{Binding FilterText}" />
+
+        <Button HotKey="Escape" IsVisible="False" Command="{Binding CloseCommand}" />
+        <Button HotKey="Enter" IsVisible="False" Command="{Binding SwitchToAppCommand}"
+                CommandParameter="{Binding SelectedWindow}" />
+
+        <Button HotKey="Up" IsVisible="False" Command="{Binding MoveUpCommand}" />
+        <Button HotKey="Ctrl+K" IsVisible="False" Command="{Binding MoveUpCommand}" />
+
+
+        <Button HotKey="Down" IsVisible="False" Command="{Binding MoveDownCommand}" />
+        <Button HotKey="Ctrl+J" IsVisible="False" Command="{Binding MoveDownCommand}" />
+
+        <Button HotKey="Left" IsVisible="False" Command="{Binding MoveToPreviousDesktopCommand}" />
+        <Button HotKey="Right" IsVisible="False" Command="{Binding MoveToNextDesktopCommand}" />
+        <Button HotKey="Ctrl+L" IsVisible="False" Command="{Binding MoveToNextDesktopCommand}" />
+        <Button HotKey="Ctrl+H" IsVisible="False" Command="{Binding MoveToPreviousDesktopCommand}" />
+        <Button HotKey="Ctrl+G" IsVisible="False" Command="{Binding ToggleDesktopSelection}" />
+
+        <Button HotKey="Ctrl+D" IsVisible="False" Command="{Binding CloseWindowCommand}" />
+
+        <ListBox ItemsSource="{Binding DesktopList}"
+                 IsVisible="{Binding ShowDesktops}"
+                 SelectedItem="{Binding SelectedDesktop}"
+                 SelectedIndex="{Binding SelectedDesktopIndex}"
+                 HorizontalAlignment="Center"
+                 MaxWidth="{Binding #Root.MaxWidth}">
+            <ListBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"></StackPanel>
+                </ItemsPanelTemplate>
+            </ListBox.ItemsPanel>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Border BorderThickness="1" Width="32" Height="32" BorderBrush="Green" Margin="4" Background="#FF0078D4" CornerRadius="4">
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="4" Text="{Binding WindowCount}" Foreground="White"/>
+                    </Border>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <ListBox ItemsSource="{Binding WindowsList}" SelectedItem="{Binding SelectedWindow}"
+                 SelectedIndex="{Binding SelectedIndex}"
+                 Name="WindowsList"
+                 MaxHeight="{Binding #Root.ListMaxHeight}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="models:WindowInfo">
+                    <Border
+                        BorderBrush="Transparent"
+                        BorderThickness="8"
+                        PointerPressed="WindowsList_OnPointerPressed">
+                        <DockPanel Focusable="True"
+                                   HorizontalAlignment="Stretch"
+                                   VerticalAlignment="Stretch"
+                                   Background="Transparent">
+                            <Image DockPanel.Dock="Left" Source="{Binding Icon}" Width="32" Height="32"
+                                   Margin="4"
+                                   Stretch="UniformToFill" />
+                            <TextBlock Text="{Binding Title}" VerticalAlignment="Center"
+                                       Margin="4,0,0,0" />
+                        </DockPanel>
+                    </Border>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ListBox>
+    </StackPanel>
+</Window>
