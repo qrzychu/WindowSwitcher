@@ -25,7 +25,7 @@ jobs:
 
       - name: Build
         run: |
-          dotnet build --configuration Release --output .\build-output
+          dotnet publish \src\WindowSwitcher\WindowSwitcher.csproj --configuration Release --output .\build-output
 
       - name: Zip Release
         run: |

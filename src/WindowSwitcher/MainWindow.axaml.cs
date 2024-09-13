@@ -38,12 +38,6 @@ public partial class MainWindow : ReactiveWindow<MainViewModel>, IDisposable, IE
                 .Subscribe()
                 .DisposeWith(d);
         });
-
-
-        if (Debugger.IsAttached)
-        {
-            this.AttachDevTools();
-        }
     }
 
     private void CenterWindowOnMainScreen()
@@ -97,7 +91,7 @@ public partial class MainWindow : ReactiveWindow<MainViewModel>, IDisposable, IE
 
     private void WindowBase_OnDeactivated(object? sender, EventArgs e)
     {
-        // Hide();
+        Hide();
     }
 
     private void WindowsList_OnPointerPressed(object? sender, PointerPressedEventArgs e)
