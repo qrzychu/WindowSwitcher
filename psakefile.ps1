@@ -14,7 +14,7 @@ task Clean {
     exec { dotnet clean $projectPath }
 }
 
-task Publish -depends Clean {
+task Publish {
     exec { dotnet publish $projectPath -c $buildConfiguration /p:Version=$version /p:DebugType=None /p:DebugSymbols=false -o "$toolsPath\app" }
 }
 
