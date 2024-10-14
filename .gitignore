@@ -17,6 +17,9 @@
 mono_crash.*
 
 /tools/app
+*.zip
+*.nupkg
+WindowSwitcher.nuspec
 
 # Build results
 [Dd]ebug/
