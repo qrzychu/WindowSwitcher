@@ -13,11 +13,6 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: nowsprinting/check-version-format-action@v2
-        id: version
-        with:
-          prefix: 'v'
-
       - name: Get version
         id: version
         shell: bash
