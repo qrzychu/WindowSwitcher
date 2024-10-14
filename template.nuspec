@@ -1,0 +1,19 @@
+﻿<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+    <metadata>
+        <id>window-switcher</id>
+        <version>{{version}}</version>
+        <title>Window Switcher</title>
+        <authors>Krzysztof Skowronek</authors>
+        <projectUrl>https://github.com/qrzychu/WindowSwitcher</projectUrl>
+        <licenseUrl>https://github.com/qrzychu/WindowSwitcher/blob/main/LICENSE</licenseUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Application for switching between different applications based on their name</description>
+        <summary>Keyboard-focused app for window switching</summary>
+        <tags>window-switcher task-switcher alt-tab productivity desktop-utility window-management multitasking workflow
+            efficiency user-interface
+        </tags>
+    </metadata>
+    <files>
+        <file src="tools\**" target="tools"/>
+    </files>
+</package>

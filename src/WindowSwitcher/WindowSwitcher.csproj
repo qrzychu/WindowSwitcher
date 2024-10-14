@@ -55,10 +55,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="tray_icon.png" />
-      <AdditionalFiles Include="tray_icon.png">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </AdditionalFiles>
+        <EmbeddedResource Include="Assets\tray_icon.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </EmbeddedResource>
     </ItemGroup>
-    
+
 </Project>

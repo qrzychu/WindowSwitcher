@@ -1,6 +1,8 @@
 using System;
+using System.IO;
 using System.Reactive.Linq;
 using System.Reactive.Threading.Tasks;
+using System.Reflection;
 using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Controls;
@@ -100,7 +102,7 @@ public partial class App : Application
     {
         _trayIcon ??= new TrayIcon
         {
-            Icon = new WindowIcon("tray_icon.png"),
+            Icon = new WindowIcon(LoadIconResource()),
             ToolTipText = "Window Switcher",
             Command = ReactiveCommand.Create(ShowMainWindow),
             Menu =
@@ -112,6 +114,13 @@ public partial class App : Application
                 }
             ]
         };
+    }
+    
+    
+    private Stream LoadIconResource()
+    {
+        var assembly = Assembly.GetExecutingAssembly();
+        return assembly.GetManifestResourceStream("WindowSwitcher.Assets.tray_icon.png")!;
     }
 
 
