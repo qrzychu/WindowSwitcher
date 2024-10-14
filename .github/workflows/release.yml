@@ -37,8 +37,8 @@ jobs:
 
       - name: Run build.ps1
         run: |
-          echo "Extracted version without prefix: ${{ steps.version.outputs.full_without_prefix }}"
-          pwsh ./build.ps1 -Version ${{ steps.version.outputs.full_without_prefix }}
+          Write-Host "Extracted version without prefix: ${{ steps.version.outputs.full_without_prefix }}"
+          pwsh ./build.ps1 -Version "${{ steps.version.outputs.full_without_prefix }}"
 
       - name: Create GitHub Release and Upload .nupkg
         id: create_release
