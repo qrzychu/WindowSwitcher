@@ -37,7 +37,7 @@ jobs:
 
       - name: Run build.ps1
         shell: pwsh
-        run: ./build.ps1 -Version ${{ steps.version.full_without_prefix }}
+        run: ./build.ps1 -Version ${{ steps.version.outputs.full_without_prefix }}
 
       - name: Create GitHub Release and Upload .nupkg
         id: create_release
@@ -54,6 +54,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./window-switcher.${{ steps.version.full_without_prefix }}.nupkg
-          asset_name: window-switcher.${{ steps.version.full_without_prefix }}.nupkg
+          asset_path: ./window-switcher.${{ steps.version.outputs.full_without_prefix }}.nupkg
+          asset_name: window-switcher.${{ steps.version.outputs.full_without_prefix }}.nupkg
           asset_content_type: application/octet-stream
