@@ -5,11 +5,19 @@ on:
     tags:
       - 'v*'  # Triggers on version tags like v0.1.0
 
+permissions: 
+  contents: write  # Allows creating releases
+
 jobs:
   build_and_release:
     runs-on: windows-latest
 
     steps:
+      - uses: nowsprinting/check-version-format-action@v3
+        id: version
+        with:
+          prefix: 'v'
+      
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -24,13 +32,9 @@ jobs:
           choco install llvm -y
           clang --version
 
-      - name: Extract version without "v"
-        id: extract_version
-        run: echo "::set-output name=version::${{ github.ref_name##v }}"
-
       - name: Run build.ps1
         shell: pwsh
-        run: ./build.ps1 -Version ${{ steps.extract_version.outputs.version }}
+        run: ./build.ps1 -Version ${{ steps.version.full_without_prefix }}
 
       - name: Create GitHub Release and Upload .nupkg
         id: create_release
@@ -47,6 +51,6 @@ jobs:
         uses: actions/upload-release-asset@v1
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./window-switcher.${{ steps.extract_version.outputs.version }}.nupkg
-          asset_name: window-switcher.${{ steps.extract_version.outputs.version }}.nupkg
+          asset_path: ./window-switcher.${{ steps.version.full_without_prefix }}.nupkg
+          asset_name: window-switcher.${{ steps.version.full_without_prefix }}.nupkg
           asset_content_type: application/octet-stream
