@@ -13,14 +13,12 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Get version
+      - name: Extract version without "v" using PowerShell
         id: version
-        shell: bash
         run: |
-          VERSION=${{ github.event.release.tag_name }}
-          echo ":: ${VERSION:1}"
-          echo "full_without_prefix=${VERSION:1}" >> $GITHUB_OUTPUT
-          
+          $version = $env:GITHUB_REF -replace 'refs/tags/v', ''
+          echo "##[set-output name=full_without_prefix;$version]"
+        
 
       - name: Checkout code
         uses: actions/checkout@v3
