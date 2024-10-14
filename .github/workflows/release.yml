@@ -18,14 +18,14 @@ jobs:
         with:
           prefix: 'v'
 
-      - name: Version tag only step
+      - name: Get version
+        id: version
+        shell: bash
         run: |
-          echo "Found valid version format in tag!"
-          echo "Full without prefix: ${{ steps.version.full_without_prefix }}"
-          echo "Full version: ${{ steps.version.outputs.full }}"
-          echo "Major version: ${{ steps.version.outputs.major }}"
-          echo "Major with pre-release: ${{ steps.version.outputs.major_prerelease }}"
-          echo "is valid ${{ steps.version.outputs.is_valid }}"
+          VERSION=${{ github.event.release.tag_name }}
+          echo ":: ${VERSION:1}"
+          echo "full_without_prefix=${VERSION:1}" >> $GITHUB_OUTPUT
+          
 
       - name: Checkout code
         uses: actions/checkout@v3
