@@ -9,7 +9,7 @@ $(TARGET): $(SRC)
 clean:
 	del /Q $(TARGET) *.exp *.lib *.o *.obj
 
-.PHONY: all clean
+.PHONY: all
 
 # Debugging information
 debug:
