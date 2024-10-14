@@ -17,7 +17,8 @@ jobs:
         id: version
         run: |
           $version = $env:GITHUB_REF -replace 'refs/tags/v', ''
-          echo "##[set-output name=full_without_prefix;$version]"
+          echo $version
+          echo "full_without_prefix:$version" >> $GITHUB_OUTPUT
         
 
       - name: Checkout code
