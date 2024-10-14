@@ -5,7 +5,7 @@ on:
     tags:
       - 'v*'  # Triggers on version tags like v0.1.0
 
-permissions: 
+permissions:
   contents: write  # Allows creating releases
 
 jobs:
@@ -17,7 +17,16 @@ jobs:
         id: version
         with:
           prefix: 'v'
-      
+
+      - name: Version tag only step
+        run: |
+          echo "Found valid version format in tag!"
+          echo "Full without prefix: ${{ steps.version.full_without_prefix }}"
+          echo "Full version: ${{ steps.version.outputs.full }}"
+          echo "Major version: ${{ steps.version.outputs.major }}"
+          echo "Major with pre-release: ${{ steps.version.outputs.major_prerelease }}"
+          echo "is valid ${{ steps.version.outputs.is_valid }}"
+
       - name: Checkout code
         uses: actions/checkout@v3
 
