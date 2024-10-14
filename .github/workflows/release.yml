@@ -37,9 +37,8 @@ jobs:
 
       - name: Run build.ps1
         shell: pwsh
-        with:
-          version: ${{ steps.version.outputs.full_without_prefix }}
         run: |
+          $version = '${{ steps.version.outputs.full_without_prefix }}'
           Write-Host "Extracted version without prefix: $version"
           ./build.ps1 -Version $version
 
