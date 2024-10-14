@@ -36,10 +36,9 @@ jobs:
           clang --version
 
       - name: Run build.ps1
-        shell: pwsh
         run: |
-          Write-Host "Extracted version without prefix: ${{ steps.version.outputs.full_without_prefix }}"
-          ./build.ps1 -Version ${{ steps.version.outputs.full_without_prefix }}
+          echo "Extracted version without prefix: ${{ steps.version.outputs.full_without_prefix }}"
+          pwsh ./build.ps1 -Version ${{ steps.version.outputs.full_without_prefix }}
 
       - name: Create GitHub Release and Upload .nupkg
         id: create_release
