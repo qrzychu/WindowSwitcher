@@ -41,6 +41,10 @@ jobs:
           $version = "${{ steps.version.outputs.full_without_prefix }}"
           Write-Host "Extracted version without prefix: $version"
           ./build.ps1 -Version $version
+          
+      - name: Generate Checksums
+        run: |
+          .\createChecksums.ps1 tools\app
 
       - name: Create GitHub Release and Upload .nupkg
         id: create_release
@@ -62,6 +66,16 @@ jobs:
           asset_path: ./window-switcher.${{ steps.version.outputs.full_without_prefix }}.nupkg
           asset_name: window-switcher.${{ steps.version.outputs.full_without_prefix }}.nupkg
           asset_content_type: application/octet-stream
+          
+      - name: Upload checksums.txt to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./checksums.txt
+          asset_name: checksums.txt
+          asset_content_type: application/octet-stream   
           
       - name: Upload .nupkg to Chocolatey
         env:

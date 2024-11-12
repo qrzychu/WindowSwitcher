@@ -18,7 +18,7 @@ task Publish {
     exec { dotnet publish $projectPath -c $buildConfiguration /p:Version=$version /p:DebugType=None /p:DebugSymbols=false -o "$toolsPath\app" }
 }
 
-task UpdateNuspec -depends Publish {
+task PreparePackage -depends Publish {
     if (-not (Test-Path $templatePath)) {
         throw "Template file not found at $templatePath"
     }
@@ -36,6 +36,9 @@ task UpdateNuspec -depends Publish {
     Set-Content -Path $nuspecPath -Value $updatedContent
 
     Write-Host "Updated version to $version in $nuspecPath"
+    
+    # Copy license 
+    Copy-Item -Path "LICENSE" -Destination $toolsPath 
 }
 
 task CreateZip -depends Publish {
@@ -51,7 +54,7 @@ task CreateZip -depends Publish {
     Write-Host "Created zip archive at $zipPath"
 }
 
-task Package -depends UpdateNuspec {
+task Package -depends PreparePackage {
     exec { choco pack $nuspecPath }
 }
 
