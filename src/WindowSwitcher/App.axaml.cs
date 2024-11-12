@@ -33,11 +33,13 @@ public partial class App : Application
     {
         AvaloniaXamlLoader.Load(this);
 
+        var logPath = Path.Join(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "WindowSwitcher", "log.txt");
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .WriteTo.Console()
-            .WriteTo.File("logs\\log.txt", rollingInterval: RollingInterval.Day,
-                restrictedToMinimumLevel: LogEventLevel.Information)
+            .WriteTo.File(logPath, rollingInterval: RollingInterval.Day,
+                restrictedToMinimumLevel: LogEventLevel.Warning)
             .CreateLogger();
 
         Locator.CurrentMutable.UseSerilogFullLogger();
@@ -64,7 +66,7 @@ public partial class App : Application
 
             base.OnFrameworkInitializationCompleted();
         }
-        catch(Exception e)
+        catch (Exception e)
         {
             Log.Logger.Error(e, "Error during initialization");
             throw;
@@ -115,8 +117,8 @@ public partial class App : Application
             ]
         };
     }
-    
-    
+
+
     private Stream LoadIconResource()
     {
         var assembly = Assembly.GetExecutingAssembly();

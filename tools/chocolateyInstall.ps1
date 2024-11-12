@@ -2,8 +2,11 @@
 $installDir = Join-Path $toolsDir "app"
 $exePath = Join-Path $installDir "WindowSwitcher.exe"
 
+Write-Host "Installing WindowsSwitcher to $exepath"
+
 # Function to create a shortcut
-function Create-Shortcut {
+function Create-Shortcut
+{
     param (
         [string]$ShortcutPath,
         [string]$TargetPath,
@@ -14,7 +17,7 @@ function Create-Shortcut {
     $Shortcut = $WshShell.CreateShortcut($ShortcutPath)
     $Shortcut.TargetPath = $TargetPath
     $Shortcut.Description = $Description
-    $Shortcut.IconLocation = Join-Path $TargetPath "Assets/tray_icon.png"
+    $Shortcut.WorkingDirectory = $installDir
     $Shortcut.Save()
 }
 
@@ -28,5 +31,6 @@ Create-Shortcut -ShortcutPath $startupShortcut `
 Write-Host "WindowsSwitcher added to auto-start"
 
 Write-Host "Starting WindowSwitcher in the background."
-Start-Process -FilePath $exePath -WindowStyle Hidden
+Start-Process -FilePath $exePath -WindowStyle Hidden -WorkingDirectory $installDir
+
 
