@@ -10,6 +10,7 @@ using Avalonia.Media.Imaging;
 using Serilog;
 using WindowSwitcher.Services.Models;
 using WindowSwitcher.Services.OS;
+// ReSharper disable InconsistentNaming
 
 namespace WindowSwitcher.Services.WindowManager;
 
@@ -52,55 +53,62 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
         List<WindowInfo> windows = [];
 
         var start = Stopwatch.GetTimestamp();
-        WindowsApi.EnumWindows((hWnd, lParam) =>
+        WindowsApi.EnumWindows((hWnd, _) =>
         {
             if (WindowsApi.IsWindowVisible(hWnd))
             {
-                StringBuilder sbClassName = new StringBuilder(256);
-                WindowsApi.GetClassName(hWnd, sbClassName, sbClassName.Capacity);
-                string className = sbClassName.ToString();
-
-                if (ExcludedClassNames.Contains(className))
-                    return true;
-
-                int length = WindowsApi.GetWindowTextLength(hWnd);
-                if (length > 0)
-                {
-                    StringBuilder sb = new StringBuilder(length + 1);
-                    WindowsApi.GetWindowText(hWnd, sb, sb.Capacity);
-                    string title = sb.ToString();
-
-                    if (string.IsNullOrEmpty(title))
-                        return true;
-
-                    var processName = GetProcessNameFromWindowHandle(hWnd).ToLower();
-                    if (processName.Contains("windowswitcher") || ExcludedProcessNames.Contains(processName))
-                        return true;
-
-                    var windowVirtualDesktopId = GetWindowVirtualDesktopId(hWnd);
-
-                    // tray icon windows
-                    if (windowVirtualDesktopId == Guid.Empty)
-                    {
-                        return true;
-                    }
-                    
-                    windows.Add(new WindowInfo(
-                        hWnd,
-                        title,
-                        (GetWindowIcon(hWnd) ?? FallbackIcon),
-                        processName,
-                        windowVirtualDesktopId
-                    ));
-                }
+                if (TryParseWindow(hWnd, windows)) return true;
             }
 
             return true;
         }, IntPtr.Zero);
         
-        _logger.Information("loaded {WindowsCount} windows in {TotalMilliseconds} ms", windows.Count, Stopwatch.GetElapsedTime(start).TotalMilliseconds);
+        _logger.Information("Loaded {WindowsCount} windows in {TotalMilliseconds} ms", windows.Count, Stopwatch.GetElapsedTime(start).TotalMilliseconds);
 
         return windows;
+    }
+
+    private bool TryParseWindow(IntPtr hWnd, List<WindowInfo> windows)
+    {
+        StringBuilder sbClassName = new StringBuilder(256);
+        WindowsApi.GetClassName(hWnd, sbClassName, sbClassName.Capacity);
+        string className = sbClassName.ToString();
+
+        if (ExcludedClassNames.Contains(className))
+            return true;
+
+        int length = WindowsApi.GetWindowTextLength(hWnd);
+        if (length > 0)
+        {
+            StringBuilder sb = new StringBuilder(length + 1);
+            WindowsApi.GetWindowText(hWnd, sb, sb.Capacity);
+            string title = sb.ToString();
+
+            if (string.IsNullOrEmpty(title))
+                return true;
+
+            var processName = GetProcessNameFromWindowHandle(hWnd).ToLower();
+            if (processName.Contains("windowswitcher") || ExcludedProcessNames.Contains(processName))
+                return true;
+
+            var windowVirtualDesktopId = GetWindowVirtualDesktopId(hWnd);
+
+            // tray icon windows
+            if (windowVirtualDesktopId == Guid.Empty)
+            {
+                return true;
+            }
+                    
+            windows.Add(new WindowInfo(
+                hWnd,
+                title,
+                (GetWindowIcon(hWnd) ?? FallbackIcon),
+                processName,
+                windowVirtualDesktopId
+            ));
+        }
+
+        return false;
     }
 
     public void FocusWindow(WindowInfo handle)

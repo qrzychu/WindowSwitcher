@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
@@ -18,7 +17,7 @@ namespace WindowSwitcher;
 
 public partial class MainWindow : ReactiveWindow<MainViewModel>, IDisposable, IEnableLogger
 {
-    private readonly ILogger Logger = Log.Logger.ForContext<MainWindow>();
+    private readonly ILogger _logger = Log.Logger.ForContext<MainWindow>();
 
     public MainWindow(MainViewModel viewModel)
     {
@@ -72,7 +71,7 @@ public partial class MainWindow : ReactiveWindow<MainViewModel>, IDisposable, IE
             (int)(workingArea.Y + (workingArea.Height - Height) / 2)
         );
 
-        Logger.Debug(
+        _logger.Debug(
             "Window size: {Width}x{Height} at {Position} with {Count} windows, and {ItemCount} displayed items",
             Width, Height, Position, ViewModel!.WindowsList.Count, ViewModel!.WindowsList.Count);
     }
@@ -115,7 +114,7 @@ public partial class MainWindow : ReactiveWindow<MainViewModel>, IDisposable, IE
 
             if (listBoxItem is null)
             {
-                Logger.Error("ListBoxItem is null, control: {Control}", control.GetType());
+                _logger.Error("ListBoxItem is null, control: {Control}", control.GetType());
                 return;
             }
 

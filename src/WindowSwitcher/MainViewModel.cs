@@ -17,7 +17,7 @@ namespace WindowSwitcher;
 
 public class MainViewModel : ReactiveObject, IActivatableViewModel
 {
-    private readonly ILogger Logger = Log.Logger.ForContext<MainViewModel>();
+    private readonly ILogger _logger = Log.Logger.ForContext<MainViewModel>();
     
     private readonly SourceCache<WindowInfo, IntPtr> _windows = new(x => x.Handle);
     private readonly ReadOnlyObservableCollection<WindowInfo> _windowsList;
@@ -171,7 +171,7 @@ public class MainViewModel : ReactiveObject, IActivatableViewModel
             }
 
             _windows.Remove(w);
-            Logger.Information("Window {Title} closed", w.Title);
+            _logger.Information("Window {Title} closed", w.Title);
         });
         
         CloseWindowCommand.Where(x => x is not null)

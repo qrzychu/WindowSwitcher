@@ -1,9 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Runtime.InteropServices;
+// ReSharper disable InconsistentNaming
 
 namespace WindowSwitcher.Services.Keyboard
 {
@@ -20,6 +22,7 @@ namespace WindowSwitcher.Services.Keyboard
 
         public IObservable<Unit> Signal => _signalSubject.AsObservable();
 
+        [RequiresAssemblyFiles()]
         public HotKeyInterceptor()
         {
             _messageWindow = new MessageWindow();
@@ -35,7 +38,7 @@ namespace WindowSwitcher.Services.Keyboard
             }
         }
 
-        private void OnHotKeyPressed(object sender, EventArgs e)
+        private void OnHotKeyPressed(object? sender, EventArgs e)
         {
             _signalSubject.OnNext(Unit.Default);
         }
@@ -74,19 +77,18 @@ namespace WindowSwitcher.Services.Keyboard
             private const int WS_EX_TOOLWINDOW = 0x80;
             private const int WS_POPUP = unchecked((int)0x80000000);
 
-            public event EventHandler HotKeyPressed;
+            public event EventHandler? HotKeyPressed;
 
             private readonly IntPtr _hwnd;
-            private readonly WNDPROC _wndProc;
 
             public IntPtr Handle => _hwnd;
 
+            [RequiresAssemblyFiles("Calls System.Runtime.InteropServices.Marshal.GetHINSTANCE(Module)")]
             public MessageWindow()
             {
-                _wndProc = WndProc;
                 var wndClass = new WNDCLASS
                 {
-                    lpfnWndProc = Marshal.GetFunctionPointerForDelegate(_wndProc),
+                    lpfnWndProc = Marshal.GetFunctionPointerForDelegate(WndProc),
                     hInstance = Marshal.GetHINSTANCE(typeof(MessageWindow).Module),
                     lpszClassName = "MessageWindowClass"
                 };
@@ -167,8 +169,6 @@ namespace WindowSwitcher.Services.Keyboard
                 [MarshalAs(UnmanagedType.LPStr)]
                 public string lpszClassName;
             }
-
-            private delegate IntPtr WNDPROC(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
         }
     }
 }

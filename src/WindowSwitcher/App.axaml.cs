@@ -49,7 +49,7 @@ public partial class App : Application
     {
         try
         {
-            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+            if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime)
             {
                 SetupTrayIcon();
                 SetupKeyboardActivation();
