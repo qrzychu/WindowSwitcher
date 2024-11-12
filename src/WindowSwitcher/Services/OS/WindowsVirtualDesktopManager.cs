@@ -5,7 +5,7 @@ namespace WindowSwitcher.Services.OS;
 
 public class VirtualDesktopManager : IDesktopManager
 {
-    [DllImport("VirtualDesktopManager.dll")]
+    [DllImport("WindowsApiWrapper.dll")]
     private static extern int GetWindowDesktopId(IntPtr hwnd, out Guid desktopId);
 
     public Guid GetWindowDesktopId(IntPtr hwnd)

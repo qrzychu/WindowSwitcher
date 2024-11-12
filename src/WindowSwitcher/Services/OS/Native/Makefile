@@ -1,10 +1,10 @@
-﻿TARGET = VirtualDesktopManager.dll
-SRC = VirtualDesktopManager.cpp
+﻿TARGET = WindowsApiWrapper.dll
+SRC = WindowsApiWrapper.cpp
 
 all: $(TARGET)
 
 $(TARGET): $(SRC)
-	clang++ -shared -lole32 -loleaut32 -o $(TARGET) $(SRC)
+	clang++ -shared -lole32 -loleaut32 -lgdiplus -luser32 -lgdi32 -lshell32 -o $(TARGET) $(SRC)
 
 clean:
 	del /Q $(TARGET) *.exp *.lib *.o *.obj

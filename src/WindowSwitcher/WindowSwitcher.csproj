@@ -39,11 +39,11 @@
     </Target>
 
     <Target Name="CopyNativeDLL" AfterTargets="Build">
-        <Copy SourceFiles="$(ProjectDir)Services/OS/Native/VirtualDesktopManager.dll" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
+        <Copy SourceFiles="$(ProjectDir)Services\OS\Native\WindowsApiWrapper.dll" DestinationFolder="$(OutDir)" SkipUnchangedFiles="true" />
     </Target>
 
     <Target Name="CopyNativeDLLToPublishDir" AfterTargets="Publish">
-        <Copy SourceFiles="$(ProjectDir)Services/OS/Native/VirtualDesktopManager.dll" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
+        <Copy SourceFiles="$(ProjectDir)Services\OS\Native\WindowsApiWrapper.dll" DestinationFolder="$(PublishDir)" SkipUnchangedFiles="true" />
     </Target>
 
     <ItemGroup>

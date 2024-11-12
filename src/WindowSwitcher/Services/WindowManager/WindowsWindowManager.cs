@@ -35,7 +35,6 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
         "startmenuexperiencehost",
         "searchui",
         "shellexperiencehost",
-        "applicationframehost",
         "systemsettings",
         "lockapp",
         "runtimebroker",
@@ -87,7 +86,7 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
                     windows.Add(new WindowInfo(
                         hWnd,
                         title,
-                        (GetWindowIcon(hWnd) ?? new Bitmap("tray_icon.png")),
+                        (GetWindowIcon(hWnd) ?? new Bitmap("Assets/tray_icon.png")),
                         processName,
                         windowVirtualDesktopId
                     ));
@@ -209,21 +208,12 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
 
     private Bitmap? GetWindowIcon(object handle)
     {
-        if (!(handle is IntPtr hWnd))
-            return null;
+        if (handle is IntPtr hWnd)
+        {
+            return IconExtractor.GetWindowIcon(hWnd) ?? FallbackIcon;
+        }
 
-        IntPtr hIcon = WindowsApi.SendMessage(hWnd, WindowsApi.WM_GETICON, WindowsApi.ICON_SMALL, IntPtr.Zero);
-
-        if (hIcon == IntPtr.Zero)
-            hIcon = WindowsApi.SendMessage(hWnd, WindowsApi.WM_GETICON, WindowsApi.ICON_BIG, IntPtr.Zero);
-
-        if (hIcon == IntPtr.Zero)
-            hIcon = WindowsApi.GetClassLongPtr(hWnd, WindowsApi.GCL_HICON);
-
-        if (hIcon == IntPtr.Zero)
-            return null;
-
-        return CreateBitmapFromHIcon(hIcon);
+        return FallbackIcon;
     }
 
     private Bitmap CreateBitmapFromHIcon(IntPtr hIcon)
@@ -254,4 +244,6 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
             return Guid.Empty;
         }
     }
+    
+    private static Bitmap FallbackIcon = new Bitmap("Assets/tray_icon.png");
 }
