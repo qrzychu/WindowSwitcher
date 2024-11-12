@@ -15,7 +15,9 @@ namespace WindowSwitcher.Services.WindowManager;
 
 public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWindowService
 {
-    private readonly ILogger Logger = Log.Logger.ForContext<WindowServiceWindows>();
+    private readonly ILogger _logger = Log.Logger.ForContext<WindowServiceWindows>();
+    
+    private static readonly Bitmap FallbackIcon = new Bitmap("Assets/tray_icon.png");
     
     private static readonly HashSet<string> ExcludedClassNames =
     [
@@ -35,7 +37,6 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
         "startmenuexperiencehost",
         "searchui",
         "shellexperiencehost",
-        "applicationframehost",
         "systemsettings",
         "lockapp",
         "runtimebroker",
@@ -48,7 +49,7 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
 
     public List<WindowInfo> GetWindows()
     {
-        List<WindowInfo> windows = new List<WindowInfo>();
+        List<WindowInfo> windows = [];
 
         var start = Stopwatch.GetTimestamp();
         WindowsApi.EnumWindows((hWnd, lParam) =>
@@ -87,7 +88,7 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
                     windows.Add(new WindowInfo(
                         hWnd,
                         title,
-                        (GetWindowIcon(hWnd) ?? new Bitmap("tray_icon.png")),
+                        (GetWindowIcon(hWnd) ?? FallbackIcon),
                         processName,
                         windowVirtualDesktopId
                     ));
@@ -97,7 +98,7 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
             return true;
         }, IntPtr.Zero);
         
-        Logger.Information($"loaded {windows.Count} windows in {Stopwatch.GetElapsedTime(start).TotalMilliseconds} ms");
+        _logger.Information("loaded {WindowsCount} windows in {TotalMilliseconds} ms", windows.Count, Stopwatch.GetElapsedTime(start).TotalMilliseconds);
 
         return windows;
     }
@@ -160,16 +161,16 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
             // Note: SendMessage returns 0 if processed successfully for most messages
             if (result)
             {
-                Logger.Debug("Close message sent successfully.");
+                _logger.Debug("Close message sent successfully");
                 return true;
             }
 
-            Logger.Debug("Failed to send close message to window {Window}", handle);
+            _logger.Debug("Failed to send close message to window {Window}", handle);
             return false;
         }
         catch (Exception ex)
         {
-            Logger.Error(ex, "An error occurred while trying to close the window.");
+            _logger.Error(ex, "An error occurred while trying to close the window");
             return false;
         }
     }
@@ -250,7 +251,7 @@ public class WindowServiceWindows(IDesktopManager virtualDesktopManager) : IWind
         catch (COMException e)
         {
             // mostly tray icons
-            Logger.Debug(e, "Failed to get virtual desktop ID for window.");
+            _logger.Debug(e, "Failed to get virtual desktop ID for window");
             return Guid.Empty;
         }
     }
