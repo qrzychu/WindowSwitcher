@@ -24,6 +24,7 @@
         </Style>
     </Window.Styles>
     <StackPanel>
+        <Label IsVisible="{Binding !ShowHelp}" HorizontalAlignment="Center">? - Show help</Label>
         <windowSwitcher:Help IsVisible="{Binding ShowHelp}" />
         <TextBox Name="FilterBox" Text="{Binding FilterText}" />
 

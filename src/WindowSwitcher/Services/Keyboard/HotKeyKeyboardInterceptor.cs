@@ -80,15 +80,20 @@ namespace WindowSwitcher.Services.Keyboard
             public event EventHandler? HotKeyPressed;
 
             private readonly IntPtr _hwnd;
+            
+            // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
+            // this is here to prevent GC from collecting the delegate
+            private readonly WNDPROC _wndproc;
 
             public IntPtr Handle => _hwnd;
 
             [RequiresAssemblyFiles("Calls System.Runtime.InteropServices.Marshal.GetHINSTANCE(Module)")]
             public MessageWindow()
             {
+                _wndproc = WndProc;
                 var wndClass = new WNDCLASS
                 {
-                    lpfnWndProc = Marshal.GetFunctionPointerForDelegate(WndProc),
+                    lpfnWndProc = Marshal.GetFunctionPointerForDelegate(_wndproc),
                     hInstance = Marshal.GetHINSTANCE(typeof(MessageWindow).Module),
                     lpszClassName = "MessageWindowClass"
                 };
@@ -169,6 +174,8 @@ namespace WindowSwitcher.Services.Keyboard
                 [MarshalAs(UnmanagedType.LPStr)]
                 public string lpszClassName;
             }
+            
+            private delegate IntPtr WNDPROC(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
         }
     }
 }
