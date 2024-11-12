@@ -19,25 +19,38 @@ namespace WindowSwitcher;
 public partial class MainWindow : ReactiveWindow<MainViewModel>, IDisposable, IEnableLogger
 {
     private readonly ILogger Logger = Log.Logger.ForContext<MainWindow>();
-    
+
     public MainWindow(MainViewModel viewModel)
     {
         InitializeComponent();
+        HotKeyManager.SetHotKey(HelpButton, new KeyGesture(Key.OemQuestion));
 
         ViewModel = viewModel;
 
         this.WhenActivated(d =>
         {
+            FilterBox.KeyDown += FilterBox_KeyDown;
+
             ViewModel.SwitchToAppCommand
                 .Merge(ViewModel.CloseCommand)
                 .ObserveOn(RxApp.MainThreadScheduler)
-                .Do(_ =>
-                {
-                    Hide();
-                })
+                .Do(_ => { Hide(); })
                 .Subscribe()
                 .DisposeWith(d);
+
+            Disposable.Create(() => FilterBox,
+                (filterBox) => filterBox().KeyDown -= FilterBox_KeyDown).DisposeWith(d);
         });
+    }
+
+    private void FilterBox_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (FilterBox.Text!.Length == 0 && e.Key == Key.OemQuestion)
+        {
+            ViewModel!.ToggleHelpCommand.Execute().Subscribe();
+
+            e.Handled = true;
+        }
     }
 
     private void CenterWindowOnMainScreen()
@@ -99,13 +112,13 @@ public partial class MainWindow : ReactiveWindow<MainViewModel>, IDisposable, IE
         if (e.Source is Control control)
         {
             var listBoxItem = control.GetVisualAncestors().OfType<ListBoxItem>().FirstOrDefault();
-            
-            if(listBoxItem is null)
+
+            if (listBoxItem is null)
             {
                 Logger.Error("ListBoxItem is null, control: {Control}", control.GetType());
                 return;
             }
-            
+
             ViewModel!.SwitchToAppCommand.Execute(listBoxItem.DataContext as WindowInfo).Subscribe();
         }
     }

@@ -30,6 +30,7 @@ public class MainViewModel : ReactiveObject, IActivatableViewModel
     private VirtualDesktopInfo? _selectedDesktop;
     private int? _selectedDesktopIndex;
     private readonly ObservableAsPropertyHelper<bool> _showDesktops;
+    private bool _showHelp;
 
     public ReadOnlyObservableCollection<WindowInfo> WindowsList => _windowsList;
     public ReadOnlyObservableCollection<VirtualDesktopInfo> DesktopList => _desktops;
@@ -126,7 +127,11 @@ public class MainViewModel : ReactiveObject, IActivatableViewModel
 
         MoveUpCommand.Merge(MoveDownCommand)
             .InvokeCommand(MoveSelectedIndex);
-
+        
+        ToggleHelpCommand = ReactiveCommand.Create(() =>
+        {
+            ShowHelp = !ShowHelp;
+        });
 
         MoveToPreviousDesktopCommand = ReactiveCommand.Create(() =>
         {
@@ -184,6 +189,12 @@ public class MainViewModel : ReactiveObject, IActivatableViewModel
             .ToProperty(this, x => x.ShowDesktops);
     }
 
+    public bool ShowHelp
+    {
+        get => _showHelp;
+        set => this.RaiseAndSetIfChanged(ref _showHelp, value);
+    }
+
     public bool ShowDesktops => _showDesktops.Value;
 
     private ReactiveCommand<WindowInfo, Unit> WatchWindowCommand { get; set; }
@@ -237,6 +248,7 @@ public class MainViewModel : ReactiveObject, IActivatableViewModel
     public ReactiveCommand<Unit, Unit> MoveToNextDesktopCommand { get; }
     public ReactiveCommand<Unit, Unit> MoveToPreviousDesktopCommand { get; }
     public ReactiveCommand<Unit, Unit> ToggleDesktopSelection { get; }
+    public ReactiveCommand<Unit, Unit> ToggleHelpCommand { get; }
 
     private void SelectNextDesktop()
     {

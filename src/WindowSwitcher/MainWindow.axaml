@@ -3,6 +3,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:models="clr-namespace:WindowSwitcher.Services.Models"
+        xmlns:windowSwitcher="clr-namespace:WindowSwitcher"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         SystemDecorations="None"
         TransparencyLevelHint="AcrylicBlur, Blur, Transparent"
@@ -23,8 +24,10 @@
         </Style>
     </Window.Styles>
     <StackPanel>
+        <windowSwitcher:Help IsVisible="{Binding ShowHelp}" />
         <TextBox Name="FilterBox" Text="{Binding FilterText}" />
 
+        <Button Name="HelpButton" IsVisible="False" Command="{Binding ToggleHelpCommand}" />
         <Button HotKey="Escape" IsVisible="False" Command="{Binding CloseCommand}" />
         <Button HotKey="Enter" IsVisible="False" Command="{Binding SwitchToAppCommand}"
                 CommandParameter="{Binding SelectedWindow}" />
